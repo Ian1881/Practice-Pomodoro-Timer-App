@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <link rel="icon" href="data:;," />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Daily Pomodoro</title>
+
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.19.0/cdn/themes/dark.css"
+    />
+    <script
+      type="module"
+      src="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.19.0/cdn/shoelace-autoloader.js"
+    ></script>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body class="sl-theme-dark">
+    <div class="animated-bg"></div>
+    <div class="pattern-overlay"></div>
+
+    <div class="dashboard-layout">
+      <sl-card class="timer-card">
+        <sl-tab-group id="mode-tabs">
+          <sl-tab slot="nav" panel="work" active id="work-button">Work</sl-tab>
+          <sl-tab slot="nav" panel="study" id="study-button">Study</sl-tab>
+          <sl-tab slot="nav" panel="personal" id="personal-button"
+            >Personal</sl-tab
+          >
+        </sl-tab-group>
+
+        <div id="timer-display" class="time-display">25:00</div>
+
+        <div class="controls-group">
+          <sl-input
+            id="custom-time"
+            type="number"
+            label="Set Minutes"
+            placeholder="Enter time..."
+            min="1"
+            inputmode="decimal"
+          ></sl-input>
+
+          <div class="button-group">
+            <sl-button id="start-btn" variant="primary" size="large"
+              >Start</sl-button
+            >
+            <sl-button id="pause-btn" variant="warning" size="large" disabled
+              >Pause</sl-button
+            >
+            <sl-button id="reset-btn" variant="danger" size="large"
+              >Reset</sl-button
+            >
+          </div>
+        </div>
+        <sl-button id="stop-alarm-btn" variant="default" size="large"
+          >Stop Alarm</sl-button
+        >
+      </sl-card>
+
+      <sl-card class="summary-card">
+        <div class="summary-header">
+          <h2 class="summary-title">Performance Metrics Today</h2>
+          <span class="pulse-badge">Live Logging</span>
+        </div>
+
+        <div class="stats-grid">
+          <div class="stat-box accent-work">
+            <span class="stat-label">Work</span>
+            <span id="summary-work" class="stat-value">00:00m</span>
+          </div>
+          <div class="stat-box accent-study">
+            <span class="stat-label">Study</span>
+            <span id="summary-study" class="stat-value">00:00m</span>
+          </div>
+          <div class="stat-box accent-personal">
+            <span class="stat-label">Personal</span>
+            <span id="summary-personal" class="stat-value">00:00m</span>
+          </div>
+        </div>
+
+        <div class="log-wrapper">
+          <h3 class="log-title">Historical Time Ledger</h3>
+          <ul id="activity-log" class="log-list">
+            <li class="empty-log-msg">
+              No completed blocks tracked in this workspace. Start the clock to
+              begin.
+            </li>
+          </ul>
+          <sl-button id="clear-btn" variant="secondary" size="large"
+            >clear memory</sl-button
+          >
+        </div>
+      </sl-card>
+    </div>
+
+    <audio
+      id="alarm-sound"
+      src="./sounds/german-music.mp3"
+      preload="auto"
+    ></audio>
+
+    <script src="script.js"></script>
+  </body>
+</html>
