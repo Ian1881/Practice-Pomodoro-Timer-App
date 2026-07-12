@@ -41,7 +41,7 @@ let currentMode = 'work';
 let totalWorkSeconds = +localStorage.getItem('savedWork') || 0;
 let totalStudySeconds = +localStorage.getItem('savedStudy') || 0;
 let totalPersonalSeconds = +localStorage.getItem('savedPersonal') || 0;
-
+let timerRunning = false;
 const workLog = JSON.parse(localStorage.getItem('savedLog')) || [];
 
 const logUIUpdate = function (logs) {
@@ -65,6 +65,7 @@ const activeTimer = function () {
   if (timeInterval) {
     clearInterval(timeInterval);
   }
+  timerRunning = true;
   el.startBtn.disabled = true;
   el.pauseBtn.disabled = false;
   el.workTab.disabled = true;
@@ -97,6 +98,7 @@ const activeTimer = function () {
       clearInterval(timeInterval);
       el.startBtn.disabled = false;
       el.pauseBtn.disabled = true;
+      timerRunning = false;
       timeTracker();
       el.alarmSound.play();
       resetTimer();
@@ -172,6 +174,7 @@ const timeTracker = function () {
 };
 
 const pauseTimer = function () {
+  timerRunning = false;
   clearInterval(timeInterval);
   el.startBtn.textContent = 'Continue';
   el.startBtn.disabled = false;
@@ -190,6 +193,7 @@ const resetTimer = function () {
   el.workTab.disabled = false;
   el.studyTab.disabled = false;
   el.personalTab.disabled = false;
+  timerRunning = false;
   setDefaultModeTime();
 };
 
@@ -252,11 +256,10 @@ el.resetBtn.addEventListener('click', resetTimer);
 el.clearBtn.addEventListener('click', clearMemory);
 el.stopAlarmBtn.addEventListener('click', stopAlarm);
 el.soundSelect.addEventListener('sl-change', changeSound);
-
 document.addEventListener('keydown', function (e) {
   if (e.key === 'Enter') {
-    activeTimer();
+    if (!timerRunning) activeTimer();
   } else if (e.key === ' ') {
-    pauseTimer();
+    if (timerRunning) pauseTimer();
   }
 });
