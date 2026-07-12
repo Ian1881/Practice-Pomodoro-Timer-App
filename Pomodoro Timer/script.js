@@ -15,9 +15,25 @@ const el = {
   studyBlock: document.getElementById('summary-study'),
   personalBlock: document.getElementById('summary-personal'),
   alarmSound: document.getElementById('alarm-sound'),
+  soundSelect: document.getElementById('drop-down-sounds'),
   tabGroup: document.getElementById('mode-tabs'),
   allActivity: document.getElementById('activity-log'),
 };
+
+const soundFiles = [
+  'alarm.mp3',
+  'air-horn-sound.mp3',
+  'german-music.mp3',
+  'rizzz-sound.mp3',
+  'yay-sound.mp3',
+  'faaah.mp3',
+  'wow-sound.mp3',
+];
+
+soundFiles.forEach(file => {
+  const html = `<sl-option class="sound" value="sounds/${file}">${file}</sl-option>`;
+  el.soundSelect.insertAdjacentHTML('beforeend', html);
+});
 
 let timeRemaining, timeInterval;
 let totalSessionTime = 0;
@@ -219,6 +235,12 @@ const stopAlarm = function () {
   el.alarmSound.currentTime = 0;
 };
 
+//! Remember to add change sound feature
+const changeSound = function () {
+  const chosenSound = el.soundSelect.value;
+  el.alarmSound.src = chosenSound;
+};
+
 el.tabGroup.addEventListener('sl-tab-show', function (e) {
   currentMode = e.detail.name;
   resetTimer();
@@ -229,3 +251,4 @@ el.pauseBtn.addEventListener('click', pauseTimer);
 el.resetBtn.addEventListener('click', resetTimer);
 el.clearBtn.addEventListener('click', clearMemory);
 el.stopAlarmBtn.addEventListener('click', stopAlarm);
+el.soundSelect.addEventListener('sl-change', changeSound);

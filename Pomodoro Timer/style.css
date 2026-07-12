@@ -13,7 +13,7 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 24px;
+  padding: clamp(12px, 3vw, 24px);
   position: relative;
   overflow-x: hidden;
   color: #fff;
@@ -26,7 +26,6 @@ body {
   width: 100vw;
   height: 100vh;
   z-index: -2;
-
   background: linear-gradient(-45deg, #788df8, #f77fef, #ffdc9c, #fcbec0);
   background-size: 400% 400%;
   animation: gradientBG 15s ease infinite;
@@ -60,7 +59,7 @@ body {
 
 .dashboard-layout {
   display: flex;
-  gap: 24px;
+  gap: clamp(16px, 3vw, 24px);
   width: 100%;
   max-width: 900px;
   flex-wrap: wrap;
@@ -68,8 +67,8 @@ body {
 
 .timer-card,
 .summary-card {
-  flex: 1;
-  min-width: 320px;
+  flex: 1 1 300px;
+  min-width: 280px;
   background: rgba(15, 15, 20, 0.7);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
@@ -78,11 +77,21 @@ body {
   box-shadow:
     0 20px 40px rgba(0, 0, 0, 0.2),
     inset 0 1px 0 rgba(255, 255, 255, 0.1);
-  padding: 32px;
+  padding: clamp(20px, 4vw, 32px);
+}
+
+.timer-card {
+  position: relative;
+  z-index: 10;
+}
+
+.summary-card {
+  position: relative;
+  z-index: 1;
 }
 
 .time-display {
-  font-size: 6.5rem;
+  font-size: clamp(4rem, 12vw, 6.5rem);
   font-weight: 800;
   text-align: center;
   margin: 24px 0;
@@ -128,7 +137,7 @@ body {
 }
 
 .summary-title {
-  font-size: 1.25rem;
+  font-size: clamp(1rem, 2.5vw, 1.25rem);
   font-weight: 600;
 }
 
@@ -144,7 +153,7 @@ body {
 
 .stats-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
   gap: 12px;
   margin-bottom: 32px;
 }
@@ -168,7 +177,7 @@ body {
 }
 
 .stat-value {
-  font-size: 1.4rem;
+  font-size: clamp(1.1rem, 3vw, 1.4rem);
   font-weight: 700;
   color: #fff;
 }

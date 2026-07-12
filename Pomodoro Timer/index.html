@@ -57,6 +57,12 @@
         <sl-button id="stop-alarm-btn" variant="default" size="large"
           >Stop Alarm</sl-button
         >
+        <sl-select
+          id="drop-down-sounds"
+          label="Select Alarm Sound"
+          value="alarm.mp3"
+        >
+        </sl-select>
       </sl-card>
 
       <sl-card class="summary-card">
@@ -95,11 +101,7 @@
       </sl-card>
     </div>
 
-    <audio
-      id="alarm-sound"
-      src="./sounds/german-music.mp3"
-      preload="auto"
-    ></audio>
+    <audio id="alarm-sound" src="./sounds/alarm.mp3" preload="auto"></audio>
 
     <script src="script.js"></script>
   </body>
