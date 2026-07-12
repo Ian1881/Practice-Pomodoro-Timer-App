@@ -252,3 +252,11 @@ el.resetBtn.addEventListener('click', resetTimer);
 el.clearBtn.addEventListener('click', clearMemory);
 el.stopAlarmBtn.addEventListener('click', stopAlarm);
 el.soundSelect.addEventListener('sl-change', changeSound);
+
+document.addEventListener('keydown', function (e) {
+  if (e.key === 'Enter') {
+    activeTimer();
+  } else if (e.key === ' ') {
+    pauseTimer();
+  }
+});
