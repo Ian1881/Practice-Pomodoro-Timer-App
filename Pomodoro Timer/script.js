@@ -1,5 +1,7 @@
 'use strict';
 
+const timerWorker = new Worker('worker.js');
+
 const el = {
   workTab: document.getElementById('work-button'),
   studyTab: document.getElementById('study-button'),
@@ -62,12 +64,10 @@ logUIUpdate(workLog);
 
 const activeTimer = function () {
   el.startBtn.textContent = 'Start';
-  if (timeInterval) {
-    clearInterval(timeInterval);
-  }
   timerRunning = true;
   el.startBtn.disabled = true;
   el.pauseBtn.disabled = false;
+
   el.workTab.disabled = true;
   el.studyTab.disabled = true;
   el.personalTab.disabled = true;
@@ -75,40 +75,49 @@ const activeTimer = function () {
   if (!timeRemaining) {
     setDefaultModeTime();
     if (!timeRemaining) {
-      if (currentMode === 'study') {
-        timeRemaining = 45 * 60;
-        totalSessionTime = timeRemaining;
-      } else if (currentMode === 'personal') {
-        timeRemaining = 10 * 60;
-        totalSessionTime = timeRemaining;
-      } else if (currentMode === 'work') {
-        timeRemaining = 25 * 60;
-        totalSessionTime = timeRemaining;
-      }
+      if (currentMode === 'study') timeRemaining = 45 * 60;
+      else if (currentMode === 'personal') timeRemaining = 10 * 60;
+      else if (currentMode === 'work') timeRemaining = 25 * 60;
+      totalSessionTime = timeRemaining;
     }
   }
 
-  const activeClock = function () {
-    const min = String(Math.trunc(timeRemaining / 60)).padStart(2, 0);
-    const sec = String(timeRemaining % 60).padStart(2, 0);
+  const targetEndTime = Date.now() + timeRemaining * 1000;
 
-    el.timerDisplay.textContent = `${min}:${sec}`;
+  const initialMsLeft = targetEndTime - Date.now();
+  const initialSecLeft = Math.round(initialMsLeft / 1000);
+  const initialMin = String(Math.trunc(initialSecLeft / 60)).padStart(2, 0);
+  const initialSec = String(initialSecLeft % 60).padStart(2, 0);
+  el.timerDisplay.textContent = `${initialMin}:${initialSec}`;
 
-    if (timeRemaining === 0) {
-      clearInterval(timeInterval);
-      el.startBtn.disabled = false;
-      el.pauseBtn.disabled = true;
-      timerRunning = false;
-      timeTracker();
-      el.alarmSound.play();
-      resetTimer();
-      return;
-    } else timeRemaining--;
+  timerWorker.postMessage('start');
+
+  timerWorker.onmessage = function (e) {
+    if (e.data === 'tick') {
+      const msLeft = targetEndTime - Date.now();
+
+      if (msLeft <= 0) {
+        timerWorker.postMessage('stop');
+        timeRemaining = 0;
+        timerRunning = false;
+
+        el.startBtn.disabled = false;
+        el.pauseBtn.disabled = true;
+
+        el.timerDisplay.textContent = `00:00`;
+
+        timeTracker();
+        el.alarmSound.play();
+        resetTimer();
+      } else {
+        timeRemaining = Math.round(msLeft / 1000);
+        const min = String(Math.trunc(timeRemaining / 60)).padStart(2, 0);
+        const sec = String(timeRemaining % 60).padStart(2, 0);
+        el.timerDisplay.textContent = `${min}:${sec}`;
+      }
+    }
   };
 
-  activeClock();
-
-  timeInterval = setInterval(activeClock, 1000);
   el.timeInput.value = '';
 };
 
@@ -175,7 +184,7 @@ const timeTracker = function () {
 
 const pauseTimer = function () {
   timerRunning = false;
-  clearInterval(timeInterval);
+  timerWorker.postMessage('stop');
   el.startBtn.textContent = 'Continue';
   el.startBtn.disabled = false;
   el.pauseBtn.disabled = true;
@@ -185,7 +194,7 @@ const pauseTimer = function () {
 };
 
 const resetTimer = function () {
-  clearInterval(timeInterval);
+  timerWorker.postMessage('stop');
   el.startBtn.textContent = 'Start';
   timeRemaining = 0;
   el.startBtn.disabled = false;
